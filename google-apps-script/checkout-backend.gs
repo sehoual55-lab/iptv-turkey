@@ -63,11 +63,9 @@ var HEADERS = [
 
 /* -- Web app ------------------------------------------------------------ */
 
-function doPost(e) {
-  try {
-    var payload = JSON.parse(e.postData.contents);
-
-    var sheet = getSheet();
+/** Writes one order and sends the alert. Shared by doPost and doGet. */
+function handleOrder(payload) {
+  var sheet = getSheet();
     sheet.appendRow([
       new Date(),
       payload.name || '',
@@ -80,24 +78,64 @@ function doPost(e) {
       'Nouvelle'
     ]);
 
-    // Alert is best-effort: the row is already saved, so a mail failure
-    // must not turn into an error for the customer.
-    try {
-      notify(payload, sheet);
-    } catch (mailErr) {
-      Logger.log('Notification failed: ' + mailErr);
-    }
+  // Alert is best-effort: the row is already saved, so a mail failure must
+  // not turn into an error for the customer.
+  try {
+    notify(payload, sheet);
+  } catch (mailErr) {
+    Logger.log('Notification failed: ' + mailErr);
+  }
 
-    return json({ ok: true });
+  return sheet.getLastRow();
+}
+
+function doPost(e) {
+  try {
+    var row = handleOrder(JSON.parse(e.postData.contents));
+    return json({ ok: true, row: row });
   } catch (err) {
     // Never throw: a failure here must not block the customer's order.
+    Logger.log('doPost failed: ' + err);
     return json({ ok: false, error: String(err) });
   }
 }
 
-/** Open the /exec URL in a browser to confirm the deployment is live. */
-function doGet() {
-  return json({ ok: true, service: 'IPTV Turkey order intake' });
+/**
+ * Handles orders sent as query parameters, and doubles as a health check.
+ *
+ * The website uses GET because an Apps Script /exec POST is answered with a
+ * 302 to googleusercontent.com, and browsers drop the request body when
+ * following that redirect — the request appears to succeed while nothing is
+ * written. A GET survives the redirect intact.
+ *
+ * It also means you can test everything by pasting a URL into a browser:
+ *   <your /exec url>?name=Test&email=a@b.com&plan=Gold&total=49.99
+ */
+function doGet(e) {
+  var p = (e && e.parameter) || {};
+
+  if (!p.name && !p.email && !p.plan) {
+    return json({ ok: true, service: 'IPTV Turkey order intake' });
+  }
+
+  try {
+    var row = handleOrder({
+      name: p.name,
+      email: p.email,
+      phone: p.phone,
+      country: p.country,
+      plan: p.plan,
+      months: p.months,
+      paidMonths: p.paidMonths,
+      bonusMonths: p.bonusMonths,
+      connections: p.connections,
+      total: p.total
+    });
+    return json({ ok: true, row: row });
+  } catch (err) {
+    Logger.log('doGet failed: ' + err);
+    return json({ ok: false, error: String(err) });
+  }
 }
 
 /* -- Helpers ------------------------------------------------------------ */

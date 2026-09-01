@@ -64,21 +64,22 @@ export function OrderForm({
   /**
    * Records the order in the spreadsheet.
    *
-   * Fire-and-forget: Apps Script sends no CORS headers, so the request goes out
-   * with mode 'no-cors' and the response cannot be read. A failure here must
-   * never block the customer, so errors are swallowed.
+   * Sent as a GET with query parameters, not a POST. An Apps Script /exec POST
+   * is answered with a 302 to googleusercontent.com and browsers drop the body
+   * when following it, so the request looks successful while nothing is
+   * written. A GET survives the redirect.
+   *
+   * Fire-and-forget: the response cannot be read cross-origin, and a logging
+   * failure must never block the customer.
    */
   const logOrder = (data: Record<string, string | number>) => {
     if (!siteConfig.orderEndpoint) return;
     try {
-      void fetch(siteConfig.orderEndpoint, {
-        method: 'POST',
-        mode: 'no-cors',
-        // text/plain avoids a CORS preflight Apps Script cannot answer.
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify(data),
-        keepalive: true,
+      const url = new URL(siteConfig.orderEndpoint);
+      Object.entries(data).forEach(([key, value]) => {
+        url.searchParams.set(key, String(value));
       });
+      void fetch(url.toString(), { method: 'GET', mode: 'no-cors', keepalive: true });
     } catch {
       /* the WhatsApp handoff below still runs */
     }
