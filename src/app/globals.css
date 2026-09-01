@@ -1,0 +1,105 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: dark;
+    --font-display: 'Outfit Variable', system-ui, sans-serif;
+    --font-body: 'Inter Variable', system-ui, sans-serif;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    /* Offset anchor targets so the sticky header never covers a heading. */
+    scroll-padding-top: 6.5rem;
+  }
+
+  body {
+    @apply bg-navy-900 text-paper font-body antialiased;
+  }
+
+  h1, h2, h3, h4 {
+    @apply font-display font-semibold text-paper;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  /* Visible, high-contrast focus for keyboard users on a dark background. */
+  :focus-visible {
+    outline: 2px solid #FF6B76;
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  ::selection {
+    background: #E11D2E;
+    color: #fff;
+  }
+}
+
+@layer components {
+  .shell {
+    @apply mx-auto w-full max-w-shell px-5 sm:px-6 lg:px-8;
+  }
+
+  /* Wider container for the pricing grid, which needs the extra room. */
+  .shell-wide {
+    @apply mx-auto w-full max-w-wide px-5 sm:px-6 lg:px-8;
+  }
+
+  /* Glass card: a hairline border over a very low-opacity gradient. */
+  .card {
+    @apply rounded-card border border-navy-600 bg-glass shadow-card;
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg px-5 py-3
+           font-display text-sm font-semibold leading-none transition-colors
+           disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  .btn-primary {
+    @apply btn bg-brand-500 text-white hover:bg-brand-600;
+  }
+
+  .btn-secondary {
+    @apply btn border border-navy-500 bg-navy-800 text-paper hover:border-navy-500 hover:bg-navy-700;
+  }
+
+  .field {
+    @apply w-full rounded-lg border border-navy-600 bg-navy-900 px-4 py-3 text-paper
+           placeholder:text-haze focus:border-brand-400 focus:outline-none;
+  }
+
+  .label {
+    @apply mb-2 block font-display text-sm font-medium text-mist;
+  }
+
+  /* Small caption above a section heading. */
+  .eyebrow {
+    @apply mb-3 inline-block font-display text-xs font-semibold tracking-wide text-brand-400;
+  }
+
+  /* The single emphasised word inside a heading. */
+  .accent {
+    @apply bg-sheen bg-clip-text text-transparent;
+  }
+
+  .wordmark {
+    @apply font-display font-extrabold tracking-tight;
+  }
+}
+
+/* Respect the visitor's motion preference. */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

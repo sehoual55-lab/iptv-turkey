@@ -1,0 +1,11 @@
+{
+  "name": "IPTV Turkey",
+  "short_name": "IPTV Turkey",
+  "description": "Türkiye için IPTV paketleri ve Türkçe kurulum rehberleri.",
+  "lang": "tr-TR",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#080A11",
+  "theme_color": "#080A11",
+  "icons": [{ "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml" }]
+}
