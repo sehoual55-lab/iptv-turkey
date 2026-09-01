@@ -33,6 +33,13 @@
  */
 var SPREADSHEET_ID = '1IQ3yAqE_sjlsM9Fdd7rBaIdJ69hGQXzYwtg-J7WFJ4o';
 
+/**
+ * Bumped whenever this file changes, so opening the /exec URL tells you which
+ * version is actually live. If the number below does not match the number you
+ * pasted, the deployment was not updated to a new version.
+ */
+var SCRIPT_VERSION = 4;
+
 /** Tab name. Leave '' to use the first tab, whatever it is called. */
 var SHEET_NAME = '';
 
@@ -115,7 +122,13 @@ function doGet(e) {
   var p = (e && e.parameter) || {};
 
   if (!p.name && !p.email && !p.plan) {
-    return json({ ok: true, service: 'IPTV Turkey order intake' });
+    return json({
+      ok: true,
+      service: 'IPTV Turkey order intake',
+      version: SCRIPT_VERSION,
+      email: NOTIFY_EMAIL || '(alerts disabled)',
+      sheet: SPREADSHEET_ID ? 'pinned by id' : 'bound spreadsheet'
+    });
   }
 
   try {
