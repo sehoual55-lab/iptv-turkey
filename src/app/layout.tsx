@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from 'next';
+import Script from "next/script";
 // Fonts are self-hosted (no Google Fonts request), which keeps the site fast
 // and avoids sending visitor IPs to a third party before cookie consent.
 // Both families include Latin Extended, which Turkish diacritics require.
@@ -37,6 +38,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="tr">
       <body className="flex min-h-screen flex-col">
+        {/* WA-ORDER */}<Script src="/wa-order.js?v=2" strategy="beforeInteractive" />
         <StructuredData data={[organizationSchema(), websiteSchema()]} />
 
         <a
