@@ -38,7 +38,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="tr">
       <body className="flex min-h-screen flex-col">
-        {/* WA-ORDER */}<Script src="/wa-order.js?v=2" strategy="beforeInteractive" />
+        {/* WA-ORDER */}<Script src="/wa-order.js?v=9" strategy="beforeInteractive" />
         <StructuredData data={[organizationSchema(), websiteSchema()]} />
 
         <a
