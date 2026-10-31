@@ -151,7 +151,7 @@
     }
     return null;
   }
-  var CK = window.CHECKOUT_URL || "/checkout/index.html";
+  var CK = window.CHECKOUT_URL || "/checkout/";
   var KEYS = [[/excl/i, "Exclusive"], [/plat/i, "Platinum"], [/gold|\bor\b/i, "Gold"], [/bronz/i, "Bronze"]];
   function packKey(s) { s = String(s || ""); for (var i = 0; i < KEYS.length; i++) if (KEYS[i][0].test(s)) return KEYS[i][1]; return ""; }
   function go2(pack, n) { location.href = CK + "?pack=" + encodeURIComponent(pack || "Gold") + "&n=" + (n || 1); }
